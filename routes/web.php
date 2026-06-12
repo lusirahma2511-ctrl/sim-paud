@@ -303,10 +303,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('penilaian-seed', [PenilaianController::class, 'seed'])
     ->name('penilaian.seed');
     Route::resource('skala', SkalaController::class)->except(['show'])->parameters(['skala' => 'skala']);
-    Route::get('/skala', [SkalaController::class, 'index'])->name('skala.index');
-    Route::post('/skala', [SkalaController::class, 'store'])->name('skala.store');
-    Route::put('/skala/{id}', [SkalaController::class, 'update'])->name('skala.update');
-    Route::delete('/skala/{id}', [SkalaController::class, 'destroy'])->name('skala.destroy');
     
     Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi.index');
 Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store');
