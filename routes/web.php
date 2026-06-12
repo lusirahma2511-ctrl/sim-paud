@@ -161,6 +161,75 @@ Route::get('/drop-jam-pulang-presensi-guru', function () {
     }
 });
 
+// TEMPORARY: Update all presensi status to lowercase
+Route::get('/fix-presensi-status', function () {
+    try {
+        $message = "<h3>Fix Presensi Status</h3>";
+        
+        // Update PresensiGuru
+        $guruUpdated = 0;
+        $presensiGuru = \App\Models\PresensiGuru::all();
+        foreach ($presensiGuru as $p) {
+            if ($p->status !== strtolower($p->status)) {
+                $p->update(['status' => strtolower($p->status)]);
+                $guruUpdated++;
+            }
+        }
+        
+        // Update PresensiSiswa
+        $siswaUpdated = 0;
+        $presensiSiswa = \App\Models\PresensiSiswa::all();
+        foreach ($presensiSiswa as $p) {
+            if ($p->status !== strtolower($p->status)) {
+                $p->update(['status' => strtolower($p->status)]);
+                $siswaUpdated++;
+            }
+        }
+        
+        $message .= "<p>Presensi Guru updated: $guruUpdated</p>";
+        $message .= "<p>Presensi Siswa updated: $siswaUpdated</p>";
+        $message .= "<p>Total: " . ($guruUpdated + $siswaUpdated) . "</p>";
+        
+        return $message;
+    } catch (\Exception $e) {
+        return "<h3>Error</h3><p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>";
+    }
+});
+
+// TEMPORARY: Debug Kelas and Siswa relation
+Route::get('/debug-kelas-siswa', function () {
+    try {
+        $message = "<h3>Debug Kelas & Siswa</h3>";
+        
+        // Get all kelas with siswa
+        $kelasList = \App\Models\Kelas::with('siswa')->get();
+        
+        foreach ($kelasList as $k) {
+            $message .= "<h4>Kelas: " . $k->nama_kelas . " (ID: " . $k->id . ")</h4>";
+            $message .= "<p>Jumlah siswa: " . $k->siswa->count() . "</p>";
+            
+            if ($k->siswa->count() > 0) {
+                $message .= "<ul>";
+                foreach ($k->siswa as $s) {
+                    $message .= "<li>" . $s->nama_siswa . " (kelas_id: " . $s->kelas_id . ")</li>";
+                }
+                $message .= "</ul>";
+            }
+        }
+        
+        $message .= "<hr><h4>All Siswa:</h4><ul>";
+        $allSiswa = \App\Models\Siswa::all();
+        foreach ($allSiswa as $s) {
+            $message .= "<li>" . $s->nama_siswa . " (kelas_id: " . $s->kelas_id . ")</li>";
+        }
+        $message .= "</ul>";
+        
+        return $message;
+    } catch (\Exception $e) {
+        return "<h3>Error</h3><p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>";
+    }
+});
+
 // TEMPORARY: Add default value to users.status column
 Route::get('/fix-users-status-default', function () {
     try {

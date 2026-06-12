@@ -137,9 +137,9 @@
 
 <td>
 <span class="badge 
-@if($p->status=='hadir') badge-hadir
-@elseif($p->status=='sakit') badge-sakit
-@elseif($p->status=='izin') badge-izin
+@if(strtolower($p->status)=='hadir') badge-hadir
+@elseif(strtolower($p->status)=='sakit') badge-sakit
+@elseif(strtolower($p->status)=='izin') badge-izin
 @else badge-alpha
 @endif">
 {{ ucfirst($p->status) }}
@@ -151,7 +151,7 @@
     data-id="{{ $p->id }}"
     data-nama="{{ $tipe=='guru' ? $p->guru->nama_guru : $p->siswa->nama_siswa }}"
     data-tanggal="{{ $p->tanggal }}"
-    data-status="{{ $p->status }}">
+    data-status="{{ strtolower($p->status) }}">
     Edit
 </button>
 
@@ -278,14 +278,21 @@
 </div>
 </div>
 
+@push('scripts')
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 $(document).ready(function() {
 
+    console.log('Presensi script loaded!');
+    console.log('Button edit count:', $('.btn-edit').length);
+    console.log('Button delete count:', $('.btn-delete').length);
+
     // EDIT
-    $('.btn-edit').on('click', function() {
+    $(document).on('click', '.btn-edit', function() {
+        console.log('Edit button clicked! ID:', $(this).data('id'));
+        
         $('#editNama').val($(this).data('nama'));
         $('#editTanggal').val($(this).data('tanggal'));
         $('#editStatus').val($(this).data('status'));
@@ -294,9 +301,11 @@ $(document).ready(function() {
     });
 
     // DELETE
-    $('.btn-delete').on('click', function() {
+    $(document).on('click', '.btn-delete', function() {
         let id = $(this).data('id');
         let tipe = '{{ $tipe }}';
+
+        console.log('Delete button clicked! ID:', id, 'Tipe:', tipe);
 
         Swal.fire({
             title: 'Yakin hapus?',
@@ -322,5 +331,6 @@ $(document).ready(function() {
 
 });
 </script>
+@endpush
 
 @endsection

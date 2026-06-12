@@ -81,7 +81,7 @@ class PresensiController extends Controller
             PresensiGuru::create([
                 'guru_id' => $request->user_id,
                 'tanggal' => $request->tanggal,
-                'status' => ucfirst($request->status),
+                'status' => strtolower($request->status),
             ]);
 
         } else {
@@ -93,13 +93,26 @@ class PresensiController extends Controller
                 'siswa_id' => $request->user_id,
                 'kelas_id' => $siswa->kelas_id, // WAJIB
                 'tanggal' => $request->tanggal,
-                'status' => ucfirst($request->status),
+                'status' => strtolower($request->status),
             ]);
         }
 
         return redirect()->route('admin.presensi.index', [
             'tipe' => $request->tipe_presensi
         ])->with('success', 'Berhasil tambah');
+    }
+
+    public function edit($id, Request $request)
+    {
+        $tipe = $request->get('tipe', 'guru');
+        
+        if ($tipe == 'guru') {
+            $presensi = PresensiGuru::findOrFail($id);
+        } else {
+            $presensi = PresensiSiswa::findOrFail($id);
+        }
+
+        return $presensi;
     }
 
     public function update(Request $request, $id)
@@ -118,7 +131,7 @@ class PresensiController extends Controller
 
         $presensi->update([
             'tanggal' => $request->tanggal,
-            'status' => ucfirst($request->status),
+            'status' => strtolower($request->status),
         ]);
 
         return redirect()->route('admin.presensi.index', [
