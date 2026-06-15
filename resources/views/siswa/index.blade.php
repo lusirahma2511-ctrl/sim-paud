@@ -1036,6 +1036,11 @@ $(document).ready(function () {
     // Init Select2 saat halaman siap
     initSelect2();
 
+    // Re-init Select2 saat modal dibuka
+    $(document).on('shown.bs.modal', '.modal', function () {
+        initSelect2('#' + $(this).attr('id'));
+    });
+
     // ================= TAMBAH ORTU (Trigger dari Select2) =================
     $(document).on('select2:select', '#orang_tua_id, .select2-edit', function (e) {
         if (e.params.data.id === 'new') {

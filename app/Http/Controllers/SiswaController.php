@@ -78,7 +78,7 @@ class SiswaController extends Controller
             'jumlah_saudara' => 'nullable|integer',
             'alamat' => 'nullable|string',
             'status' => 'nullable|in:Aktif,Nonaktif',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
         ], []);
 
         // Check uniqueness for nik and nisn (excluding "-" values)
@@ -235,7 +235,7 @@ class SiswaController extends Controller
             'jumlah_saudara' => 'nullable|integer',
             'alamat' => 'nullable|string',
             'status' => 'nullable|in:Aktif,Nonaktif',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
         ], []);
 
         // Check uniqueness for nik and nisn (excluding "-" values and current siswa)

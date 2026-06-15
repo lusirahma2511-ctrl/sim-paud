@@ -58,7 +58,7 @@ class UserController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|max:255|unique:users,email',
                 'password' => 'required|min:6|confirmed',
-                'role' => 'required|in:admin,guru,guru_kelas,kepala_sekolah',
+                'role' => 'required|in:admin,guru,guru_kelas,guru_pendamping,kepala_sekolah',
                 'status' => 'required|in:Aktif,Nonaktif',
             ]);
 
@@ -109,7 +109,7 @@ class UserController extends Controller
     {
         $rules = [
             'name' => 'required|string|max:255',
-            'role' => 'required|in:admin,guru,guru_kelas,kepala_sekolah,orang_tua',
+            'role' => 'required|in:admin,guru,guru_kelas,guru_pendamping,kepala_sekolah,orang_tua',
             'status' => 'required|in:Aktif,Nonaktif',
         ];
 

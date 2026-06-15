@@ -274,6 +274,9 @@ class="form-control" placeholder="Contoh: 0.10" required>
 </div>
 </div>
 
+@endsection
+
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
@@ -356,4 +359,4 @@ document.querySelectorAll('input[name="bobot"]').forEach(input => {
     });
 });
 </script>
-@endsection
+@endpush

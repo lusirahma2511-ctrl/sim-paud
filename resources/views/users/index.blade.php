@@ -172,10 +172,17 @@
                                         @if($user->role=='admin') badge-danger
                                         @elseif($user->role=='guru') badge-success
                                         @elseif($user->role=='guru_kelas') badge-success
+                                        @elseif($user->role=='guru_pendamping') badge-success
                                         @elseif($user->role=='kepala_sekolah') badge-warning
                                         @else badge-primary
                                         @endif">
-                                        {{ strtoupper($user->role) }}
+                                        @switch($user->role)
+                                            @case('guru_kelas') Guru Kelas @break
+                                            @case('guru_pendamping') Guru Pendamping @break
+                                            @case('kepala_sekolah') Kepala Sekolah @break
+                                            @case('orang_tua') Orang Tua @break
+                                            @default {{ strtoupper($user->role) }}
+                                        @endswitch
                                     </span>
                                 </td>
                                 <td>
@@ -267,6 +274,7 @@
                                 <option value="admin" {{ $user->role=='admin'?'selected':'' }}>Admin</option>
                                 <option value="guru" {{ $user->role=='guru'?'selected':'' }}>Guru</option>
                                 <option value="guru_kelas" {{ $user->role=='guru_kelas'?'selected':'' }}>Guru Kelas</option>
+                                <option value="guru_pendamping" {{ $user->role=='guru_pendamping'?'selected':'' }}>Guru Pendamping</option>
                                 <option value="kepala_sekolah" {{ $user->role=='kepala_sekolah'?'selected':'' }}>Kepala Sekolah</option>
                                 <option value="orang_tua" {{ $user->role=='orang_tua'?'selected':'' }}>Orang Tua</option>
                             </select>
@@ -331,6 +339,7 @@
                                 <option value="admin">Admin</option>
                                 <option value="guru">Guru</option>
                                 <option value="guru_kelas">Guru Kelas</option>
+                                <option value="guru_pendamping">Guru Pendamping</option>
                                 <option value="kepala_sekolah">Kepala Sekolah</option>
                                 <option value="orang_tua">Orang Tua</option>
                             </select>

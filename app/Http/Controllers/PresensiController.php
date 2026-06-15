@@ -22,10 +22,15 @@ class PresensiController extends Controller
         $guru = Guru::all();
         $siswa = Siswa::all();
 
+        // Check if it's a holiday OR a weekend (Saturday/Sunday)
         $isHariLibur = HariLibur::where('tanggal', $tanggal)->exists();
+        $dayOfWeek = date('N', strtotime($tanggal)); // 1 = Monday, 6 = Saturday, 7 = Sunday
+        $isWeekend = in_array($dayOfWeek, [6, 7]);
+        
+        $isNoPresensi = $isHariLibur || $isWeekend;
 
         if ($tipe == 'guru') {
-            if (!$isHariLibur) {
+            if (!$isNoPresensi) {
                 foreach ($guru as $g) {
                     PresensiGuru::firstOrCreate(
                         ['guru_id' => $g->id, 'tanggal' => $tanggal],
@@ -40,7 +45,7 @@ class PresensiController extends Controller
         } else {
             $siswaFiltered = Siswa::when($kelas_id, fn($q) => $q->where('kelas_id', $kelas_id))->get();
             
-            if (!$isHariLibur) {
+            if (!$isNoPresensi) {
                 foreach ($siswaFiltered as $s) {
                     PresensiSiswa::firstOrCreate(
                         ['siswa_id' => $s->id, 'tanggal' => $tanggal],
@@ -63,7 +68,7 @@ class PresensiController extends Controller
         ];
 
         return view('presensi.index', compact(
-            'presensi','tipe','tanggal','kelas_id','rekap','kelas','guru','siswa','isHariLibur'
+            'presensi','tipe','tanggal','kelas_id','rekap','kelas','guru','siswa','isHariLibur','isWeekend','isNoPresensi'
         ));
     }
 

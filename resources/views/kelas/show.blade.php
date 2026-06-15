@@ -1,5 +1,26 @@
 @extends('layouts.adminlte')
 @section('content')
+<style>
+/* Card view untuk mobile */
+.siswa-card {
+    display: none;
+}
+@media (max-width: 768px) {
+    .table-view {
+        display: none;
+    }
+    .siswa-card {
+        display: block;
+    }
+    .card-siswa-item {
+        background: #fff;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+}
+</style>
 <div class="content mt-3">
     <div class="container-fluid">
         <div class="card">
@@ -23,7 +44,8 @@
                 
                 <h6 class="fw-bold mb-3">Daftar Siswa di Kelas Ini</h6>
                 @if($kelas->siswa->count() > 0)
-                    <div class="table-responsive">
+                    <!-- Table view untuk desktop -->
+                    <div class="table-responsive table-view">
                         <table class="table table-bordered">
                             <thead class="bg-light">
                                 <tr>
@@ -50,6 +72,24 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Card view untuk mobile -->
+                    <div class="siswa-card">
+                        @foreach($kelas->siswa as $index => $siswa)
+                        <div class="card-siswa-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-0 text-bold">{{ $siswa->nama_siswa }}</h6>
+                                    <small class="text-muted">NISN: {{ $siswa->nisn ?? '-' }}</small><br>
+                                    <small class="text-muted">Jenis Kelamin: {{ $siswa->jk == 'L' ? 'Laki-laki' : 'Perempuan' }}</small>
+                                </div>
+                                <span class="badge {{ ($siswa->status ?? 'Aktif') == 'Aktif' ? 'bg-success' : 'bg-danger' }}">
+                                    {{ $siswa->status ?? 'Aktif' }}
+                                </span>
+                            </div>
+                        </div>
+                        @endforeach
                     </div>
                 @else
                     <p class="text-muted">Belum ada siswa di kelas ini.</p>

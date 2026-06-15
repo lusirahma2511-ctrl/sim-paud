@@ -49,12 +49,12 @@ class GuruController extends Controller
             'status' => 'nullable|in:Aktif,Nonaktif',
             'no_hp' => 'nullable|string',
             'email' => 'nullable|email|unique:users,email',
-            'foto_guru' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'foto_guru' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
         ], [
             'nip.unique' => 'NIP ini sudah terdaftar!',
             'nik.unique' => 'NIK ini sudah terdaftar!',
             'email.unique' => 'Email ini sudah terdaftar sebagai akun user!',
-            'foto_guru.max' => 'Ukuran foto guru tidak boleh lebih dari 5MB.',
+            'foto_guru.max' => 'Ukuran foto guru tidak boleh lebih dari 10MB.',
         ]);
 
         return DB::transaction(function() use ($request) {
@@ -86,6 +86,8 @@ class GuruController extends Controller
                 $role = 'admin';
             } elseif (stripos($request->jabatan, 'Guru Kelas') !== false) {
                 $role = 'guru_kelas';
+            } elseif (stripos($request->jabatan, 'Guru Pendamping') !== false) {
+                $role = 'guru_pendamping';
             }
 
             /**
@@ -139,11 +141,11 @@ class GuruController extends Controller
             'status' => 'nullable|in:Aktif,Nonaktif',
             'no_hp' => 'nullable|string',
             'email' => 'nullable|email',
-            'foto_guru' => 'nullable|image|mimes:jpeg,png,jpg|max:5120', // Dinaikkan ke 5MB
+            'foto_guru' => 'nullable|image|mimes:jpeg,png,jpg|max:10240', // Dinaikkan ke 5MB
         ], [
             'nip.unique' => 'NIP ini sudah digunakan oleh guru lain!',
             'nik.unique' => 'NIK ini sudah digunakan oleh guru lain!',
-            'foto_guru.max' => 'Ukuran foto guru tidak boleh lebih dari 5MB.',
+            'foto_guru.max' => 'Ukuran foto guru tidak boleh lebih dari 10MB.',
         ]);
 
         $data = $request->all();
@@ -183,6 +185,8 @@ class GuruController extends Controller
                 $role = 'admin';
             } elseif (stripos($request->jabatan, 'Guru Kelas') !== false) {
                 $role = 'guru_kelas';
+            } elseif (stripos($request->jabatan, 'Guru Pendamping') !== false) {
+                $role = 'guru_pendamping';
             }
             
             $userData = ['role' => $role];

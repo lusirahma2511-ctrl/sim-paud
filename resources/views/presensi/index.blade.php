@@ -94,9 +94,10 @@
 <div class="card-header d-flex justify-content-between">
     <b>Presensi {{ ucfirst($tipe) }}</b>
 
-    @if($isHariLibur)
+    @if($isNoPresensi)
         <span class="badge bg-warning text-dark">
-            <i class="fas fa-calendar-times"></i> Hari Libur
+            <i class="fas fa-calendar-times"></i> 
+            {{ $isWeekend ? 'Hari Libur Akhir Pekan' : 'Hari Libur' }}
         </span>
     @else
         <div>
@@ -109,11 +110,11 @@
 </div>
 
 <div class="card-body">
-@if($isHariLibur)
+@if($isNoPresensi)
     <div class="text-center py-5">
         <i class="fas fa-calendar-times fa-5x text-warning mb-3"></i>
-        <h4 class="text-warning">Hari Libur</h4>
-        <p class="text-muted">Tidak ada presensi pada hari libur</p>
+        <h4 class="text-warning">{{ $isWeekend ? 'Hari Libur Akhir Pekan' : 'Hari Libur' }}</h4>
+        <p class="text-muted">Tidak ada presensi pada hari ini</p>
     </div>
 @else
 <table class="table table-bordered text-center">

@@ -243,12 +243,16 @@
 </div>
 </div>
 
+@endsection
+
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 $(document).ready(function() {
 
-    $('.btn-delete-kelas button').on('click', function(e) {
+    // Use event delegation for dynamic elements
+    $(document).on('click', '.btn-delete-kelas button', function(e) {
         e.preventDefault();
         let form = $(this).closest('form');
 
@@ -277,8 +281,9 @@ $(document).ready(function() {
                             showConfirmButton: false
                         }).then(() => location.reload());
                     },
-                    error: function() {
-                        Swal.fire('Gagal!', 'Terjadi kesalahan.', 'error');
+                    error: function(xhr) {
+                        console.error(xhr);
+                        Swal.fire('Gagal!', 'Terjadi kesalahan: ' + (xhr.responseText || xhr.statusText), 'error');
                     }
                 });
             }
@@ -304,7 +309,7 @@ $(document).ready(function() {
     });
 
     // Trigger on modal shown (for Edit modal)
-    $('.modal').on('shown.bs.modal', function () {
+    $(document).on('shown.bs.modal', '.modal', function () {
         $(this).find('.guru-select').each(function() {
             checkGuruStatus(this);
         });
@@ -312,5 +317,4 @@ $(document).ready(function() {
 
 });
 </script>
-
-@endsection
+@endpush
