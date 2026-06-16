@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Orangtua;
+use App\Models\OrangTua;
 use Illuminate\Http\Request;
 
-class OrangtuaController extends Controller
+class OrangTuaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $orangTuas = Orangtua::all();
+        $orangTuas = OrangTua::all();
         return response()->json($orangTuas);
     }
 
@@ -46,7 +46,7 @@ class OrangtuaController extends Controller
             $data['user_id'] = auth()->id();
         }
 
-        $orangTuas = Orangtua::create($data);
+        $orangTuas = OrangTua::create($data);
 
         return response()->json($orangTuas);
     }
@@ -54,7 +54,7 @@ class OrangtuaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Orangtua $orang_tua)
+    public function show(OrangTua $orang_tua)
     {
         return response()->json($orang_tua);
     }
@@ -62,7 +62,7 @@ class OrangtuaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Orangtua $orang_tua)
+    public function edit(OrangTua $orang_tua)
     {
         return response()->json($orang_tua);
     }
@@ -70,7 +70,7 @@ class OrangtuaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Orangtua $orang_tua)
+    public function update(Request $request, OrangTua $orang_tua)
     {
         $request->validate([
             'nama_ayah' => 'required|string',
@@ -88,7 +88,7 @@ class OrangtuaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Orangtua $orang_tua)
+    public function destroy(OrangTua $orang_tua)
     {
         $orang_tua->delete();       
         return response()->json(null, 204);

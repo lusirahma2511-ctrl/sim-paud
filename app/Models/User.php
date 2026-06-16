@@ -35,7 +35,7 @@ public function guru()
 
     public function orangtua()
     {
-        return $this->hasOne(\App\Models\Orangtua::class);
+        return $this->hasOne(\App\Models\OrangTua::class);
     }
 
     protected $hidden = [

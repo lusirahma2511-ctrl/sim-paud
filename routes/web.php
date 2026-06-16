@@ -7,7 +7,7 @@ use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\SkalaController;
 use App\Http\Controllers\ERaporController;
-use App\Http\Controllers\OrangtuaController;
+use App\Http\Controllers\OrangTuaController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
@@ -22,6 +22,7 @@ use App\Http\Controllers\OrangTua\DashboardController as OrangTuaDashboardContro
 use App\Http\Controllers\OrangTua\RaporController as OrangTuaRaporController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Artisan;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -255,6 +256,15 @@ Route::get('/fix-users-status-default', function () {
 require __DIR__.'/auth.php';
 
 
+// Clear Cache (Temporary)
+Route::get('/clear-cache', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('view:clear');
+    Artisan::call('route:clear');
+    return "Cache cleared successfully!";
+});
+
 // Root
 Route::get('/', function () {
     return redirect()->route('login');
@@ -290,7 +300,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/users/reset-password/{id}', [UserController::class, 'resetPassword'])
     ->name('users.resetPassword');
     Route::resource('siswa', SiswaController::class);
-    Route::resource('orang_tua', OrangtuaController::class);
+    Route::resource('orang_tua', OrangTuaController::class);
     Route::get('/siswa/kartu/{id}', [SiswaController::class,'kartu'])->name('siswa.kartu');
     Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
     Route::resource('guru', GuruController::class); // Guru management
