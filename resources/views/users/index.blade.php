@@ -170,7 +170,6 @@
                                 <td>
                                     <span class="badge badge-role 
                                         @if($user->role=='admin') badge-danger
-                                        @elseif($user->role=='guru') badge-success
                                         @elseif($user->role=='guru_kelas') badge-success
                                         @elseif($user->role=='guru_pendamping') badge-success
                                         @elseif($user->role=='kepala_sekolah') badge-warning
@@ -272,7 +271,6 @@
                             <label class="form-label fw-bold">Role</label>
                             <select name="role" class="form-control roleSelect" required>
                                 <option value="admin" {{ $user->role=='admin'?'selected':'' }}>Admin</option>
-                                <option value="guru" {{ $user->role=='guru'?'selected':'' }}>Guru</option>
                                 <option value="guru_kelas" {{ $user->role=='guru_kelas'?'selected':'' }}>Guru Kelas</option>
                                 <option value="guru_pendamping" {{ $user->role=='guru_pendamping'?'selected':'' }}>Guru Pendamping</option>
                                 <option value="kepala_sekolah" {{ $user->role=='kepala_sekolah'?'selected':'' }}>Kepala Sekolah</option>
@@ -337,7 +335,6 @@
                             <select name="role" class="form-control roleSelect" required id="tambahRoleSelect">
                                 <option value="">-- Pilih Role --</option>
                                 <option value="admin">Admin</option>
-                                <option value="guru">Guru</option>
                                 <option value="guru_kelas">Guru Kelas</option>
                                 <option value="guru_pendamping">Guru Pendamping</option>
                                 <option value="kepala_sekolah">Kepala Sekolah</option>
