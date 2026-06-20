@@ -287,13 +287,18 @@
 
         <td class="judul">
 
-            <h2>PAUD NAMA SEKOLAH</h2>
+            <h2>POS PAUD TERATAI SINDANGSARI</h2>
 
             <h3>Laporan Penilaian Perkembangan Anak</h3>
 
             <p>
-                Tahun Ajaran {{ date('Y') }}
+                Tahun Ajaran {{ $tahunAjaran ?? date('Y') }}
             </p>
+            @if(isset($semester) && $semester)
+                <p class="mt-1">
+                    Semester {{ $semester }}
+                </p>
+            @endif
 
         </td>
 

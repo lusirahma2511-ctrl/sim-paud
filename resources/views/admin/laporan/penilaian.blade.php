@@ -294,6 +294,49 @@ RESPONSIVE
 
     </div>
 
+    <!-- FILTER -->
+    <div class="card-modern mb-4">
+        <div class="card-header-modern">
+            <h5 class="card-title-modern">
+                <i class="fas fa-filter text-primary mr-2"></i>
+                Filter Data
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ route('admin.laporan.penilaian') }}" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label font-weight-bold">Tahun Ajaran</label>
+                    <select name="tahun_ajaran" class="form-control" onchange="this.form.submit()">
+                        @foreach($tahunAjaranOptions as $ta)
+                            <option value="{{ $ta }}" {{ $tahunAjaran == $ta ? 'selected' : '' }}>
+                                {{ $ta }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label font-weight-bold">Semester</label>
+                    <select name="semester" class="form-control" onchange="this.form.submit()">
+                        <option value="">Semua Semester</option>
+                        <option value="1" {{ $semester == '1' ? 'selected' : '' }}>1</option>
+                        <option value="2" {{ $semester == '2' ? 'selected' : '' }}>2</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label font-weight-bold">Kelas</label>
+                    <select name="kelas_id" class="form-control" onchange="this.form.submit()">
+                        <option value="">Semua Kelas</option>
+                        @foreach($kelasList as $kelas)
+                            <option value="{{ $kelas->id }}" {{ $kelasId == $kelas->id ? 'selected' : '' }}>
+                                {{ $kelas->nama_kelas }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- SUMMARY -->
     <div class="summary-grid">
 
@@ -492,7 +535,7 @@ RESPONSIVE
                     Cetak atau download laporan PDF
                 </p>
 
-                <a href="{{ route('admin.laporan.penilaian.cetak') }}"
+                <a href="{{ route('admin.laporan.penilaian.cetak', request()->query()) }}"
                    target="_blank"
                    class="btn btn-primary btn-lg mr-2">
 
@@ -501,7 +544,7 @@ RESPONSIVE
 
                 </a>
 
-                <a href="{{ route('admin.laporan.penilaian.download') }}"
+                <a href="{{ route('admin.laporan.penilaian.download', request()->query()) }}"
                    class="btn btn-success btn-lg">
 
                     <i class="fas fa-download mr-1"></i>
