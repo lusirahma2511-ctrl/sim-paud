@@ -231,6 +231,44 @@ Route::get('/debug-kelas-siswa', function () {
     }
 });
 
+Route::get('/debug-kelas-siswa/{id}', function ($id) {
+    try {
+        $message = "<h3>Debug Detail Kelas ID: $id</h3>";
+        
+        $kelas = \App\Models\Kelas::with('siswa')->find($id);
+        if (!$kelas) {
+            return "<p>Kelas dengan ID $id tidak ditemukan!</p>";
+        }
+        
+        $message .= "<h4>Kelas: " . $kelas->nama_kelas . "</h4>";
+        $message .= "<p>Jumlah siswa: " . $kelas->siswa->count() . "</p>";
+        
+        if ($kelas->siswa->count() > 0) {
+            $message .= "<ul>";
+            foreach ($kelas->siswa as $s) {
+                $message .= "<li>" . $s->nama_siswa . " (kelas_id: " . $s->kelas_id . ", ID: " . $s->id . ", status: " . ($s->status ?? 'NULL') . ")</li>";
+            }
+            $message .= "</ul>";
+        }
+        
+        // Check Siswa where kelas_id = $id directly
+        $siswaByQuery = \App\Models\Siswa::where('kelas_id', $id)->get();
+        $message .= "<hr><h4>Siswa dari Query where kelas_id = $id: " . $siswaByQuery->count() . "</h4>";
+        foreach ($siswaByQuery as $s) {
+            $message .= "<li>" . $s->nama_siswa . " (ID: " . $s->id . ", kelas_id: " . $s->kelas_id . ", status: " . ($s->status ?? 'NULL') . ")</li>";
+        }
+        
+        // Cek struktur tabel siswa
+        $message .= "<hr><h4>Struktur Tabel Siswa:</h4>";
+        $columns = \Illuminate\Support\Facades\Schema::getColumnListing('siswas');
+        $message .= "<p>Columns: " . implode(', ', $columns) . "</p>";
+        
+        return $message;
+    } catch (\Exception $e) {
+        return "<h3>Error</h3><p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>";
+    }
+});
+
 // TEMPORARY: Add default value to users.status column
 Route::get('/fix-users-status-default', function () {
     try {
@@ -246,6 +284,31 @@ Route::get('/fix-users-status-default', function () {
         \Illuminate\Support\Facades\DB::statement("ALTER TABLE users MODIFY COLUMN status ENUM('Aktif', 'Nonaktif') NOT NULL DEFAULT 'Aktif'");
         
         $message .= "<p>Successfully added default value 'Aktif' to users.status column!</p>";
+        
+        return $message;
+    } catch (\Exception $e) {
+        return "<h3>Error</h3><p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>";
+    }
+});
+
+// TEMPORARY: Add status column to siswas if not exists
+Route::get('/fix-siswa-status-column', function () {
+    try {
+        $message = "<h3>Fix Siswa Status Column</h3>";
+        
+        $columns = \Illuminate\Support\Facades\Schema::getColumnListing('siswas');
+        if (!in_array('status', $columns)) {
+            \Illuminate\Support\Facades\Schema::table('siswas', function ($table) {
+                $table->enum('status', ['Aktif', 'Nonaktif'])->default('Aktif')->after('password');
+            });
+            $message .= "<p>Status column added successfully!</p>";
+        } else {
+            $message .= "<p>Status column already exists!</p>";
+        }
+        
+        // Set default for existing records
+        \App\Models\Siswa::whereNull('status')->update(['status' => 'Aktif']);
+        $message .= "<p>Existing records updated!</p>";
         
         return $message;
     } catch (\Exception $e) {

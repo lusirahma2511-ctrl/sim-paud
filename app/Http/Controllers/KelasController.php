@@ -66,9 +66,11 @@ class KelasController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Kelas $kelas)
+    public function show($id)
     {
-        $kelas->load(['guru', 'siswa']);
+        $kelas = Kelas::with(['guru', 'siswa'])->findOrFail($id);
+        // Debug data
+        // dd($kelas);
         return view('kelas.show', compact('kelas'));
     }
 

@@ -42,8 +42,14 @@
                 
                 <hr>
                 
+                <!-- Debug Info -->
+                <div class="mb-3 p-2 bg-light rounded">
+                    <small class="text-muted">Debug Info:</small><br>
+                    <small>Jumlah Siswa dari relasi: {{ $kelas->siswa->count() }}</small>
+                </div>
+                
                 <h6 class="fw-bold mb-3">Daftar Siswa di Kelas Ini</h6>
-                @if($kelas->siswa->count() > 0)
+                @if($kelas->siswa->isNotEmpty())
                     <!-- Table view untuk desktop -->
                     <div class="table-responsive table-view">
                         <table class="table table-bordered">
