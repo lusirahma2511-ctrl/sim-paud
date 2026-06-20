@@ -493,7 +493,9 @@ public function penilaian(Request $request)
             'jumlahBSH',
             'jumlahBSB',
             'rekapKelas',
-            'tahunAjaran'
+            'tahunAjaran',
+            'semester',
+            'kelas_id'
         ) + ['pdf' => true]);
 
         $pdf->setPaper('A4', 'landscape');

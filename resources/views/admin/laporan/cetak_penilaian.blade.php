@@ -286,11 +286,8 @@
         </td>
 
         <td class="judul">
-
             <h2>POS PAUD TERATAI SINDANGSARI</h2>
-
             <h3>Laporan Penilaian Perkembangan Anak</h3>
-
             <p>
                 Tahun Ajaran {{ $tahunAjaran ?? date('Y') }}
             </p>
@@ -299,7 +296,16 @@
                     Semester {{ $semester }}
                 </p>
             @endif
-
+            @if(isset($kelas_id) && $kelas_id)
+                @php
+                    $selectedKelas = \App\Models\Kelas::find($kelas_id);
+                @endphp
+                @if($selectedKelas)
+                    <p class="mt-1">
+                        Kelas {{ $selectedKelas->nama_kelas }}
+                    </p>
+                @endif
+            @endif
         </td>
 
     </tr>
