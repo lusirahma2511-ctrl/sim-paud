@@ -496,9 +496,7 @@ public function penilaian(Request $request)
             'tahunAjaran',
             'semester',
             'kelas_id'
-        ) + ['pdf' => true]);
-
-        $pdf->setPaper('A4', 'landscape');
+        ) + ['pdf' => true])->setPaper('A4', 'landscape');
 
         return $pdf->download('laporan-penilaian-anak.pdf');
     }
