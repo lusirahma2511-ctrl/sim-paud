@@ -254,7 +254,17 @@ class ERaporController extends Controller
             'kepalaSekolah', 'guruKelas', 'namaIbu'
         ) + ['pdf' => true])->setPaper('a4', 'portrait');
 
-        return $pdf->download('rapor-'.$siswa->nama_siswa.'.pdf');
+        $filename = 'rapor-'.$siswa->nama_siswa.'.pdf';
+        $pdfOutput = $pdf->output();
+        $contentLength = strlen($pdfOutput);
+
+        return response($pdfOutput, 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="'.$filename.'"')
+            ->header('Content-Length', $contentLength)
+            ->header('Cache-Control', 'public, max-age=0')
+            ->header('Pragma', 'public')
+            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
 

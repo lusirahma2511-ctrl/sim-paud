@@ -31,10 +31,12 @@
                         style="width:32px; height:32px; object-fit:cover;"
                     >
                 @else
-                    <div class="img-circle elevation-2 d-flex align-items-center justify-content-center"
-                         style="width:32px; height:32px; background:#ddd;">
-                        <i class="fas fa-user text-gray-600" style="font-size:16px;"></i>
-                    </div>
+                    <img 
+                        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='7' r='4' fill='%23ccc'/%3E%3Cpath d='M12 14c-5 0-8 2-8 5v1h16v-1c0-3-3-5-8-5z' fill='%23ccc'/%3E%3C/svg%3E"
+                        class="img-circle elevation-2"
+                        style="width:32px; height:32px;"
+                        alt="Default Profile"
+                    >
                 @endif
 
                 <span class="ml-2">
