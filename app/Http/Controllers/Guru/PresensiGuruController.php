@@ -7,6 +7,7 @@ use App\Models\Guru;
 use App\Models\Siswa;
 use App\Models\PresensiGuru;
 use App\Models\PresensiSiswa;
+use App\Models\HariLibur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -86,12 +87,17 @@ class PresensiGuruController extends Controller
             ->first();
 
         if (!$guru) {
-
             return response()->json([
                 'success' => false,
                 'message' => 'Guru tidak ditemukan!'
             ]);
+        }
 
+        if ($guru->status !== 'Aktif') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Guru dinonaktifkan!'
+            ]);
         }
 
         // Cek presensi hari ini
@@ -160,12 +166,17 @@ class PresensiGuruController extends Controller
             ->first();
 
         if (!$siswa) {
-
             return response()->json([
                 'success' => false,
                 'message' => 'Siswa tidak ditemukan!'
             ]);
+        }
 
+        if ($siswa->status !== 'Aktif') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Siswa dinonaktifkan!'
+            ]);
         }
 
         // Cek sudah presensi?

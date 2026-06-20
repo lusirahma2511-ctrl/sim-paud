@@ -122,6 +122,7 @@ class NilaiController extends Controller
         }
 
         $siswa = Siswa::where('kelas_id', $kelas_id)
+            ->where('status', 'Aktif')
             ->with(['nilai_perkembangans' => function($query) use ($semester, $tahunAjaran) {
                 $query->select('id', 'siswa_id', 'kriteria_id', 'nilai')->where('semester', $semester);
                 if ($tahunAjaran) {

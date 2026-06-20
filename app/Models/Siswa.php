@@ -32,6 +32,12 @@ class Siswa extends Model
                 }
             }
         });
+
+        static::saving(function ($siswa) {
+            if ($siswa->user) {
+                $siswa->user->update(['status' => $siswa->status]);
+            }
+        });
     }
 
     public function orangTua()

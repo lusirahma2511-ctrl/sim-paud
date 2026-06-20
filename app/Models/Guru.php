@@ -30,6 +30,12 @@ class Guru extends Model
                 $guru->user->update(['status' => 'Nonaktif']);
             }
         });
+
+        static::saving(function ($guru) {
+            if ($guru->user) {
+                $guru->user->update(['status' => $guru->status]);
+            }
+        });
     }
 
     public function user()
