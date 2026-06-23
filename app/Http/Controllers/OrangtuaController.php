@@ -65,8 +65,15 @@ class OrangTuaController extends Controller
      */
     public function edit($id)
     {
-        $orangTua = OrangTua::findOrFail($id);
-        return response()->json($orangTua);
+        try {
+            $orangTua = OrangTua::findOrFail($id);
+            return response()->json($orangTua);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Gagal mengambil data orang tua: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -74,7 +81,6 @@ class OrangTuaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $orangTua = OrangTua::findOrFail($id);
         $request->validate([
             'nama_ayah' => 'required|string',
             'nama_ibu' => 'required|string',
@@ -83,9 +89,18 @@ class OrangTuaController extends Controller
             'no_hp' => 'required|string',
             'alamat' => 'required|string',
         ]);
-        $data = $request->all();
-        $orangTua->update($data);
-        return response()->json($orangTua);
+        
+        try {
+            $orangTua = OrangTua::findOrFail($id);
+            $data = $request->all();
+            $orangTua->update($data);
+            return response()->json($orangTua);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Gagal mengupdate data orang tua: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

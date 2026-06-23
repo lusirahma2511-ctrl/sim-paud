@@ -1076,6 +1076,10 @@ $(document).ready(function () {
 
         // Ambil data via AJAX dulu
         $.get('/admin/orang_tua/' + id + '/edit', function (data) {
+            if (data.error) {
+                alert(data.message);
+                return;
+            }
             $('#edit_nama_ayah').val(data.nama_ayah);
             $('#edit_pekerjaan_ayah').val(data.pekerjaan_ayah);
             $('#edit_nama_ibu').val(data.nama_ibu);
@@ -1093,8 +1097,12 @@ $(document).ready(function () {
             setTimeout(() => {
                 $('#editOrangTuaModal').modal('show');
             }, 400);
-        }).fail(() => {
-            alert('Gagal mengambil data orang tua.');
+        }).fail(function (xhr) {
+            let errorMessage = 'Gagal mengambil data orang tua.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            alert(errorMessage);
         });
     });
 

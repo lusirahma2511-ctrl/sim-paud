@@ -333,6 +333,31 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Debug route untuk cek data orang tua
+Route::get('/debug-orang-tua/{id?}', function ($id = null) {
+    try {
+        if ($id) {
+            $ortu = \App\Models\OrangTua::find($id);
+            return response()->json([
+                'status' => 'success',
+                'data' => $ortu
+            ]);
+        } else {
+            $ortu = \App\Models\OrangTua::all();
+            return response()->json([
+                'status' => 'success',
+                'count' => count($ortu),
+                'data' => $ortu
+            ]);
+        }
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ]);
+    }
+});
+
 // TEMPORARY: Create storage symlink manually (for hosting)
 Route::get('/create-storage-symlink', function () {
     try {
