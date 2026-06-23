@@ -333,6 +333,15 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Clear semua cache (config, route, view, cache)
+Route::get('/clear-all-cache', function () {
+    \Illuminate\Support\Facades\Artisan::call('config:clear');
+    \Illuminate\Support\Facades\Artisan::call('route:clear');
+    \Illuminate\Support\Facades\Artisan::call('view:clear');
+    \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    return "Semua cache berhasil dibersihkan!";
+});
+
 // Debug route untuk cek data orang tua
 Route::get('/debug-orang-tua/{id?}', function ($id = null) {
     try {
