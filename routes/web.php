@@ -23,6 +23,8 @@ use App\Http\Controllers\OrangTua\RaporController as OrangTuaRaporController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -340,6 +342,64 @@ Route::get('/clear-all-cache', function () {
     \Illuminate\Support\Facades\Artisan::call('view:clear');
     \Illuminate\Support\Facades\Artisan::call('cache:clear');
     return "Semua cache berhasil dibersihkan!";
+});
+
+// Tambah kolom semester dan tahun_ajaran ke tabel presensi_siswas
+Route::get('/add-presensi-columns', function () {
+    try {
+        if (!Schema::hasColumn('presensi_siswas', 'semester')) {
+            Schema::table('presensi_siswas', function (Blueprint $table) {
+                $table->integer('semester')->default(1)->after('keterangan');
+            });
+            echo "✅ Kolom semester berhasil ditambahkan<br>";
+        } else {
+            echo "ℹ️ Kolom semester sudah ada<br>";
+        }
+
+        if (!Schema::hasColumn('presensi_siswas', 'tahun_ajaran')) {
+            Schema::table('presensi_siswas', function (Blueprint $table) {
+                $table->string('tahun_ajaran')->nullable()->after('semester');
+            });
+            echo "✅ Kolom tahun_ajaran berhasil ditambahkan<br>";
+        } else {
+            echo "ℹ️ Kolom tahun_ajaran sudah ada<br>";
+        }
+
+        echo "<br>🎉 Selesai!";
+    } catch (\Exception $e) {
+        echo "❌ Error: " . $e->getMessage() . "<br>";
+    }
+});
+
+// Update data presensi lama (isi semester dan tahun_ajaran)
+Route::get('/update-presensi-lama', function () {
+    try {
+        $presensiList = \App\Models\PresensiSiswa::whereNull('semester')->orWhereNull('tahun_ajaran')->get();
+        $count = 0;
+
+        foreach ($presensiList as $presensi) {
+            $bulan = date('n', strtotime($presensi->tanggal));
+            $tahun = date('Y', strtotime($presensi->tanggal));
+            
+            if ($bulan >= 7) {
+                $semester = 1;
+                $tahunAjaran = $tahun . '/' . ($tahun + 1);
+            } else {
+                $semester = 2;
+                $tahunAjaran = ($tahun - 1) . '/' . $tahun;
+            }
+
+            $presensi->update([
+                'semester' => $semester,
+                'tahun_ajaran' => $tahunAjaran,
+            ]);
+            $count++;
+        }
+
+        echo "✅ Berhasil update {$count} data presensi lama!";
+    } catch (\Exception $e) {
+        echo "❌ Error: " . $e->getMessage();
+    }
 });
 
 // Debug route untuk cek data orang tua
