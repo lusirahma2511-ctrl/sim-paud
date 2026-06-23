@@ -54,24 +54,27 @@ class OrangTuaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(OrangTua $orang_tua)
+    public function show($id)
     {
-        return response()->json($orang_tua);
+        $orangTua = OrangTua::findOrFail($id);
+        return response()->json($orangTua);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(OrangTua $orang_tua)
+    public function edit($id)
     {
-        return response()->json($orang_tua);
+        $orangTua = OrangTua::findOrFail($id);
+        return response()->json($orangTua);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, OrangTua $orang_tua)
+    public function update(Request $request, $id)
     {
+        $orangTua = OrangTua::findOrFail($id);
         $request->validate([
             'nama_ayah' => 'required|string',
             'nama_ibu' => 'required|string',
@@ -81,16 +84,17 @@ class OrangTuaController extends Controller
             'alamat' => 'required|string',
         ]);
         $data = $request->all();
-        $orang_tua->update($data);
-        return response()->json($orang_tua);
+        $orangTua->update($data);
+        return response()->json($orangTua);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(OrangTua $orang_tua)
+    public function destroy($id)
     {
-        $orang_tua->delete();       
+        $orangTua = OrangTua::findOrFail($id);
+        $orangTua->delete();       
         return response()->json(null, 204);
     }
 }
