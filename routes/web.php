@@ -333,6 +333,25 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// TEMPORARY: Create storage symlink manually (for hosting)
+Route::get('/create-storage-symlink', function () {
+    try {
+        $publicPath = public_path('storage');
+        $storagePath = storage_path('app/public');
+        
+        if (file_exists($publicPath)) {
+            return "Symlink already exists!";
+        }
+        
+        // Create symlink
+        symlink($storagePath, $publicPath);
+        
+        return "Symlink created successfully!";
+    } catch (\Exception $e) {
+        return "Error creating symlink: " . $e->getMessage();
+    }
+});
+
 // Profile
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
