@@ -15,6 +15,8 @@ class PresensiSiswa extends Model
         'jam_pulang',
         'status',
         'keterangan',
+        'semester',
+        'tahun_ajaran',
     ];
 
     public function siswa()

@@ -160,9 +160,9 @@ class ERaporController extends Controller
         }
 
         $presensi = [
-            'sakit' => PresensiSiswa::where('siswa_id', $siswa_id)->where('status', 'sakit')->count(),
-            'izin'  => PresensiSiswa::where('siswa_id', $siswa_id)->where('status', 'izin')->count(),
-            'alpha' => PresensiSiswa::where('siswa_id', $siswa_id)->where('status', 'alpha')->count(),
+            'sakit' => PresensiSiswa::where('siswa_id', $siswa_id)->where('status', 'sakit')->where('semester', $semester)->where('tahun_ajaran', $tahunAjaran)->count(),
+            'izin'  => PresensiSiswa::where('siswa_id', $siswa_id)->where('status', 'izin')->where('semester', $semester)->where('tahun_ajaran', $tahunAjaran)->count(),
+            'alpha' => PresensiSiswa::where('siswa_id', $siswa_id)->where('status', 'alpha')->where('semester', $semester)->where('tahun_ajaran', $tahunAjaran)->count(),
         ];
 
         $logoBase64 = asset('images/logo paud rmv.png');
@@ -216,9 +216,9 @@ class ERaporController extends Controller
         }
 
         $presensi = [
-            'sakit' => PresensiSiswa::where('siswa_id', $id)->where('status', 'sakit')->count(),
-            'izin'  => PresensiSiswa::where('siswa_id', $id)->where('status', 'izin')->count(),
-            'alpha' => PresensiSiswa::where('siswa_id', $id)->where('status', 'alpha')->count(),
+            'sakit' => PresensiSiswa::where('siswa_id', $id)->where('status', 'sakit')->where('semester', $semester)->where('tahun_ajaran', $tahunAjaran)->count(),
+            'izin'  => PresensiSiswa::where('siswa_id', $id)->where('status', 'izin')->where('semester', $semester)->where('tahun_ajaran', $tahunAjaran)->count(),
+            'alpha' => PresensiSiswa::where('siswa_id', $id)->where('status', 'alpha')->where('semester', $semester)->where('tahun_ajaran', $tahunAjaran)->count(),
         ];
 
         // 1. Logo base64

@@ -18,6 +18,17 @@ class PresensiController extends Controller
         $tanggal = $request->get('tanggal', date('Y-m-d'));
         $kelas_id = $request->get('kelas_id');
 
+        // Hitung semester dan tahun ajaran dari tanggal
+        $bulan = date('n', strtotime($tanggal));
+        $tahun = date('Y', strtotime($tanggal));
+        if ($bulan >= 7) {
+            $semester = 1;
+            $tahunAjaran = $tahun . '/' . ($tahun + 1);
+        } else {
+            $semester = 2;
+            $tahunAjaran = ($tahun - 1) . '/' . $tahun;
+        }
+
         $kelas = Kelas::all();
         $guru = Guru::all();
         $siswa = Siswa::all();
@@ -49,7 +60,7 @@ class PresensiController extends Controller
                 foreach ($siswaFiltered as $s) {
                     PresensiSiswa::firstOrCreate(
                         ['siswa_id' => $s->id, 'tanggal' => $tanggal],
-                        ['kelas_id' => $s->kelas_id, 'status' => 'alpha']
+                        ['kelas_id' => $s->kelas_id, 'status' => 'alpha', 'semester' => $semester, 'tahun_ajaran' => $tahunAjaran]
                     );
                 }
             }
@@ -81,6 +92,17 @@ class PresensiController extends Controller
             'status' => 'required|in:hadir,sakit,izin,alpha',
         ]);
 
+        // Hitung semester dan tahun ajaran dari tanggal
+        $bulan = date('n', strtotime($request->tanggal));
+        $tahun = date('Y', strtotime($request->tanggal));
+        if ($bulan >= 7) {
+            $semester = 1;
+            $tahunAjaran = $tahun . '/' . ($tahun + 1);
+        } else {
+            $semester = 2;
+            $tahunAjaran = ($tahun - 1) . '/' . $tahun;
+        }
+
         if ($request->tipe_presensi == 'guru') {
 
             PresensiGuru::create([
@@ -99,6 +121,8 @@ class PresensiController extends Controller
                 'kelas_id' => $siswa->kelas_id, // WAJIB
                 'tanggal' => $request->tanggal,
                 'status' => strtolower($request->status),
+                'semester' => $semester,
+                'tahun_ajaran' => $tahunAjaran,
             ]);
         }
 
@@ -128,16 +152,32 @@ class PresensiController extends Controller
             'status' => 'required|in:hadir,sakit,izin,alpha',
         ]);
 
-        if ($request->tipe_presensi == 'guru') {
-            $presensi = PresensiGuru::findOrFail($id);
+        // Hitung semester dan tahun ajaran dari tanggal
+        $bulan = date('n', strtotime($request->tanggal));
+        $tahun = date('Y', strtotime($request->tanggal));
+        if ($bulan >= 7) {
+            $semester = 1;
+            $tahunAjaran = $tahun . '/' . ($tahun + 1);
         } else {
-            $presensi = PresensiSiswa::findOrFail($id);
+            $semester = 2;
+            $tahunAjaran = ($tahun - 1) . '/' . $tahun;
         }
 
-        $presensi->update([
-            'tanggal' => $request->tanggal,
-            'status' => strtolower($request->status),
-        ]);
+        if ($request->tipe_presensi == 'guru') {
+            $presensi = PresensiGuru::findOrFail($id);
+            $presensi->update([
+                'tanggal' => $request->tanggal,
+                'status' => strtolower($request->status),
+            ]);
+        } else {
+            $presensi = PresensiSiswa::findOrFail($id);
+            $presensi->update([
+                'tanggal' => $request->tanggal,
+                'status' => strtolower($request->status),
+                'semester' => $semester,
+                'tahun_ajaran' => $tahunAjaran,
+            ]);
+        }
 
         return redirect()->route('admin.presensi.index', [
             'tipe' => $request->tipe_presensi

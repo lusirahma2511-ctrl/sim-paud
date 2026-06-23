@@ -160,6 +160,17 @@ class PresensiGuruController extends Controller
 
         $now = now()->format('H:i:s');
 
+        // Hitung semester dan tahun ajaran dari tanggal hari ini
+        $bulan = date('n');
+        $tahun = date('Y');
+        if ($bulan >= 7) {
+            $semester = 1;
+            $tahunAjaran = $tahun . '/' . ($tahun + 1);
+        } else {
+            $semester = 2;
+            $tahunAjaran = ($tahun - 1) . '/' . $tahun;
+        }
+
         // Cari siswa berdasarkan barcode / nisn
         $siswa = Siswa::where('barcode', $barcode)
             ->orWhere('nisn', $barcode)
@@ -204,7 +215,9 @@ class PresensiGuruController extends Controller
 
             'jam_masuk' => $now,
 
-            'status' => 'hadir'
+            'status' => 'hadir',
+            'semester' => $semester,
+            'tahun_ajaran' => $tahunAjaran,
 
         ]);
 
