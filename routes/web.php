@@ -568,7 +568,7 @@ Route::get('/laporan/{id}', [LaporanController::class, 'show'])->name('laporan.s
 });
 // ===================== GURU (Prefix: /guru) =====================
 // Ini JANGAN pakai prefix 'admin' karena prefix-nya sudah '/guru'
-Route::middleware(['auth', 'role:guru,guru_kelas'])->prefix('guru')->name('guru.')->group(function () {
+Route::middleware(['auth', 'role:guru,guru_kelas,guru_pendamping'])->prefix('guru')->name('guru.')->group(function () {
     Route::get('/dashboard', [GuruDashboardController::class, 'index'])->name('dashboard');
     Route::get('/presensi', [PresensiGuruController::class, 'index'])->name('presensi.index');
     Route::get('/presensi/riwayat', [PresensiGuruController::class, 'riwayat'])->name('presensi.riwayat');

@@ -59,6 +59,7 @@ class LoginController extends Controller
                 return redirect()->route('admin.dashboard');
             case 'guru':
             case 'guru_kelas':
+            case 'guru_pendamping':
                 return redirect()->route('guru.dashboard');
             case 'kepala_sekolah':
                 return redirect()->route('kepala.dashboard');
