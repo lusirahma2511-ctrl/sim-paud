@@ -26,6 +26,9 @@ class LoginController extends Controller
 
         $user = User::where('username', $loginInput)
                     ->orWhere('email', $loginInput)
+                    ->orWhereHas('guru', function ($q) use ($loginInput) {
+                        $q->where('nip', $loginInput);
+                    })
                     ->first();
 
         if (!$user) {

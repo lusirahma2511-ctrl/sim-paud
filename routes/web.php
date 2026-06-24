@@ -402,6 +402,40 @@ Route::get('/update-presensi-lama', function () {
     }
 });
 
+// Debug data user dan guru
+Route::get('/debug-users-guru', function () {
+    $users = \App\Models\User::whereIn('role', ['guru', 'guru_kelas'])->get();
+    $gurus = \App\Models\Guru::all();
+    
+    echo "<h3>Data Users (Role Guru/Guru Kelas):</h3>";
+    echo "<table border='1' cellpadding='5' style='border-collapse: collapse;'>";
+    echo "<tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Guru ID</th></tr>";
+    foreach ($users as $u) {
+        echo "<tr>";
+        echo "<td>{$u->id}</td>";
+        echo "<td>{$u->username}</td>";
+        echo "<td>{$u->email}</td>";
+        echo "<td>{$u->role}</td>";
+        echo "<td>" . ($u->status ?? 'N/A') . "</td>";
+        echo "<td>{$u->guru_id}</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+
+    echo "<h3>Data Guru:</h3>";
+    echo "<table border='1' cellpadding='5' style='border-collapse: collapse;'>";
+    echo "<tr><th>ID</th><th>Nama Guru</th><th>NIP</th><th>Status</th></tr>";
+    foreach ($gurus as $g) {
+        echo "<tr>";
+        echo "<td>{$g->id}</td>";
+        echo "<td>{$g->nama_guru}</td>";
+        echo "<td>{$g->nip}</td>";
+        echo "<td>{$g->status}</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+});
+
 // Debug route untuk cek data orang tua
 Route::get('/debug-orang-tua/{id?}', function ($id = null) {
     try {
