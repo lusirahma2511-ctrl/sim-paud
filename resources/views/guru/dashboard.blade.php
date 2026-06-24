@@ -2,6 +2,11 @@
 @section('title', 'Dashboard Guru')
 
 @section('content')
+<!-- Debug: Tampilkan role user -->
+<div class="alert alert-info">
+    Role Anda: <strong>{{ auth()->user()->role }}</strong>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="row">
