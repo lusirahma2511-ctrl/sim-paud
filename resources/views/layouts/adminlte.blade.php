@@ -110,7 +110,7 @@ body.modal-open {
     <!-- Sidebar -->
     @if(auth()->user()->role === 'admin')
         @include('layouts.partials.sidebar')
-    @elseif(auth()->user()->role === 'guru' || auth()->user()->role === 'guru_kelas')
+    @elseif(auth()->user()->role === 'guru' || auth()->user()->role === 'guru_kelas' || auth()->user()->role === 'guru_pendamping')
         @include('layouts.partials.sidebarguru')
     @elseif(auth()->user()->role === 'kepala_sekolah')
         @include('layouts.partials.sidebarkepala')
