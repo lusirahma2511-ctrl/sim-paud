@@ -51,11 +51,15 @@
                 @endif
 
                 <h4 class="mt-3 mb-0">{{ $user->name }}</h4>
-                <small class="text-light text-capitalize">{{ $user->role }}</small>
+        <small class="text-light text-capitalize">{{ $user->role }}</small>
 
-                <hr class="bg-white">
+        <hr class="bg-white">
 
-                <p class="mb-0">{{ $user->email }}</p>
+        @if(!in_array($user->role, ['orang_tua']))
+            <p class="mb-0">{{ $user->email }}</p>
+        @else
+            <p class="mb-0">NISN: {{ $user->username }}</p>
+        @endif
 
             </div>
         </div>
@@ -87,11 +91,19 @@
                                        value="{{ old('name', $user->name) }}">
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label>Email</label>
-                                <input type="email" name="email" class="form-control"
-                                       value="{{ old('email', $user->email) }}">
-                            </div>
+                            @if(!in_array($user->role, ['orang_tua']))
+                                <div class="col-md-6 mb-3">
+                                    <label>Email</label>
+                                    <input type="email" name="email" class="form-control"
+                                           value="{{ old('email', $user->email) }}">
+                                </div>
+                            @else
+                                <div class="col-md-6 mb-3">
+                                    <label>NISN (Tidak dapat diubah)</label>
+                                    <input type="text" class="form-control"
+                                           value="{{ $user->username }}" disabled>
+                                </div>
+                            @endif
 
                         </div>
 
