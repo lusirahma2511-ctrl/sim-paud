@@ -19,20 +19,28 @@ class ProfileController extends Controller
         $user = $request->user();
 
         $rules = [
-    'name' => 'required|string|max:255',
-    'email' => 'required|email|unique:users,email,' . $user->id,
-    'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-];
+            'name' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ];
 
-if ($request->filled('password')) {
-    $rules['password'] = 'min:8|confirmed';
-}
+        // Email hanya wajib untuk role bukan orang tua
+        if (!in_array($user->role, ['orang_tua'])) {
+            $rules['email'] = 'required|email|unique:users,email,' . $user->id;
+        }
 
-$request->validate($rules);
+        if ($request->filled('password')) {
+            $rules['password'] = 'min:8|confirmed';
+        }
+
+        $request->validate($rules);
 
         // UPDATE DATA DASAR
         $user->name = $request->name;
-        $user->email = $request->email;
+        
+        // Hanya update email jika role bukan orang tua dan email diisi
+        if (!in_array($user->role, ['orang_tua'])) {
+            $user->email = $request->email;
+        }
 
         // UPLOAD FOTO
         if ($request->hasFile('foto')) {
@@ -43,6 +51,7 @@ $request->validate($rules);
         // UPDATE PASSWORD (JIKA DIISI)
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
+            $user->is_default_password = false;
         }
 
         $user->save();

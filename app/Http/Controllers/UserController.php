@@ -87,7 +87,7 @@ class UserController extends Controller
             if ($siswa && $siswa->tanggal_lahir) {
                 $newPassword = date('dmY', strtotime($siswa->tanggal_lahir));
             }
-        } else if (in_array($user->role, ['guru', 'kepala_sekolah', 'admin'])) {
+        } else if (in_array($user->role, ['guru', 'guru_kelas', 'guru_pendamping', 'kepala_sekolah', 'admin'])) {
             $guru = \App\Models\Guru::where('user_id', $user->id)->first();
             if ($guru && $guru->ttl) {
                 $newPassword = date('dmY', strtotime($guru->ttl));

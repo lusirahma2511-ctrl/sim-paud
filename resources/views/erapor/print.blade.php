@@ -349,7 +349,7 @@
         <tr><td class="label-col">2. Nama Panggilan</td><td class="colon-col">:</td><td>{{ strtoupper($siswa->nama_panggilan ?? '-') }}</td></tr>
         <tr><td class="label-col">3. NISN</td><td class="colon-col">:</td><td>{{ $siswa->nisn }}</td></tr>
         <tr><td class="label-col">4. Tempat, Tanggal Lahir</td><td class="colon-col">:</td><td>{{ $siswa->tempat_lahir }}, {{ \Carbon\Carbon::parse($siswa->tanggal_lahir)->translatedFormat('d F Y') }}</td></tr>
-        <tr><td class="label-col">5. Jenis Kelamin</td><td class="colon-col">:</td><td>{{ $siswa->jk == 1 ? 'Laki-Laki' : 'Perempuan' }}</td></tr>
+        <tr><td class="label-col">5. Jenis Kelamin</td><td class="colon-col">:</td><td>{{ $siswa->jk == 'L' ? 'Laki-Laki' : 'Perempuan' }}</td></tr>
         <tr><td class="label-col">6. Agama</td><td class="colon-col">:</td><td>{{ $siswa->agama ?? '-' }}</td></tr>
         <tr><td class="label-col">7. Anak Ke-</td><td class="colon-col">:</td><td>{{ $siswa->anak_ke ?? '-' }}</td></tr>
         <tr><td class="label-col">8. Jumlah Saudara</td><td class="colon-col">:</td><td>{{ $siswa->jumlah_saudara ?? '-' }}</td></tr>
