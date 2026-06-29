@@ -613,7 +613,32 @@ Route::middleware(['auth', 'role:guru,guru_kelas,guru_pendamping'])->prefix('gur
 
 // TEMPORARY: Update Tabel Presensi Siswa
 Route::get('/update-presensi-table', function () {
-    require __DIR__.'/../update-presensi-table.php';
+    use Illuminate\Support\Facades\Schema;
+    use Illuminate\Database\Schema\Blueprint;
+
+    echo "<h1>Update Tabel Presensi Siswa</h1>";
+
+    // Cek dan tambah kolom semester
+    if (!Schema::hasColumn('presensi_siswas', 'semester')) {
+        Schema::table('presensi_siswas', function (Blueprint $table) {
+            $table->string('semester')->nullable()->after('status');
+        });
+        echo "<p>✅ Kolom `semester` berhasil ditambahkan!</p>";
+    } else {
+        echo "<p>ℹ️ Kolom `semester` sudah ada!</p>";
+    }
+
+    // Cek dan tambah kolom tahun_ajaran
+    if (!Schema::hasColumn('presensi_siswas', 'tahun_ajaran')) {
+        Schema::table('presensi_siswas', function (Blueprint $table) {
+            $table->string('tahun_ajaran')->nullable()->after('semester');
+        });
+        echo "<p>✅ Kolom `tahun_ajaran` berhasil ditambahkan!</p>";
+    } else {
+        echo "<p>ℹ️ Kolom `tahun_ajaran` sudah ada!</p>";
+    }
+
+    echo "<hr><h2>Selesai! Silakan coba fitur presensi kembali.</h2>";
 });
 
 // TEMPORARY: Debug Presensi
