@@ -613,14 +613,11 @@ Route::middleware(['auth', 'role:guru,guru_kelas,guru_pendamping'])->prefix('gur
 
 // TEMPORARY: Update Tabel Presensi Siswa
 Route::get('/update-presensi-table', function () {
-    use Illuminate\Support\Facades\Schema;
-    use Illuminate\Database\Schema\Blueprint;
-
     echo "<h1>Update Tabel Presensi Siswa</h1>";
 
     // Cek dan tambah kolom semester
-    if (!Schema::hasColumn('presensi_siswas', 'semester')) {
-        Schema::table('presensi_siswas', function (Blueprint $table) {
+    if (!\Illuminate\Support\Facades\Schema::hasColumn('presensi_siswas', 'semester')) {
+        \Illuminate\Support\Facades\Schema::table('presensi_siswas', function (\Illuminate\Database\Schema\Blueprint $table) {
             $table->string('semester')->nullable()->after('status');
         });
         echo "<p>✅ Kolom `semester` berhasil ditambahkan!</p>";
@@ -629,8 +626,8 @@ Route::get('/update-presensi-table', function () {
     }
 
     // Cek dan tambah kolom tahun_ajaran
-    if (!Schema::hasColumn('presensi_siswas', 'tahun_ajaran')) {
-        Schema::table('presensi_siswas', function (Blueprint $table) {
+    if (!\Illuminate\Support\Facades\Schema::hasColumn('presensi_siswas', 'tahun_ajaran')) {
+        \Illuminate\Support\Facades\Schema::table('presensi_siswas', function (\Illuminate\Database\Schema\Blueprint $table) {
             $table->string('tahun_ajaran')->nullable()->after('semester');
         });
         echo "<p>✅ Kolom `tahun_ajaran` berhasil ditambahkan!</p>";
@@ -646,7 +643,7 @@ Route::get('/debug-presensi', function () {
     echo "<h1>Debug Presensi</h1>";
 
     // Cek kolom presensi_siswas:
-    $columns = Schema::getColumnListing('presensi_siswas');
+    $columns = \Illuminate\Support\Facades\Schema::getColumnListing('presensi_siswas');
     echo "<h3>Kolom di tabel presensi_siswas:</h3><ul>";
     foreach ($columns as $col) {
         echo "<li>{$col}</li>";
