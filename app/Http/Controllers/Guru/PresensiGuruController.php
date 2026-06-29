@@ -18,7 +18,7 @@ class PresensiGuruController extends Controller
      */
     public function index()
     {
-        $today = now()->toDateString();
+        $today = now()->setTimezone('Asia/Jakarta')->toDateString();
 
         // Presensi guru login hari ini
         $presensiGuruHariIni = PresensiGuru::where('guru_id', Auth::id())
@@ -40,7 +40,7 @@ class PresensiGuruController extends Controller
      */
     private function canScanPresensi()
     {
-        $now = now();
+        $now = now()->setTimezone('Asia/Jakarta');
         $today = $now->toDateString();
         
         // Cek apakah hari ini libur di database
@@ -77,9 +77,9 @@ class PresensiGuruController extends Controller
 
         $barcode = trim($request->barcode);
 
-        $today = now()->toDateString();
-
-        $now = now()->format('H:i:s');
+        $now = now()->setTimezone('Asia/Jakarta');
+        $today = $now->toDateString();
+        $jamMasuk = $now->format('H:i:s');
 
         // Cari guru berdasarkan barcode / nip
         $guru = Guru::where('barcode', $barcode)
@@ -120,7 +120,7 @@ class PresensiGuruController extends Controller
 
             'tanggal' => $today,
 
-            'jam_masuk' => $now,
+            'jam_masuk' => $jamMasuk,
 
             'status' => 'hadir'
 
@@ -136,7 +136,7 @@ class PresensiGuruController extends Controller
 
                 'nama' => $guru->nama_guru,
 
-                'jam' => $now
+                'jam' => $jamMasuk
 
             ]
 
@@ -156,13 +156,13 @@ class PresensiGuruController extends Controller
 
         $barcode = trim($request->barcode);
 
-        $today = now()->toDateString();
-
-        $now = now()->format('H:i:s');
+        $now = now()->setTimezone('Asia/Jakarta');
+        $today = $now->toDateString();
+        $jamMasuk = $now->format('H:i:s');
 
         // Hitung semester dan tahun ajaran dari tanggal hari ini
-        $bulan = date('n');
-        $tahun = date('Y');
+        $bulan = $now->month;
+        $tahun = $now->year;
         if ($bulan >= 7) {
             $semester = 1;
             $tahunAjaran = $tahun . '/' . ($tahun + 1);
@@ -213,7 +213,7 @@ class PresensiGuruController extends Controller
 
             'tanggal' => $today,
 
-            'jam_masuk' => $now,
+            'jam_masuk' => $jamMasuk,
 
             'status' => 'hadir',
             'semester' => $semester,
@@ -233,7 +233,7 @@ class PresensiGuruController extends Controller
 
                 'kelas' => optional($siswa->kelas)->nama_kelas ?? '-',
 
-                'jam' => $now
+                'jam' => $jamMasuk
 
             ]
 
@@ -247,9 +247,9 @@ class PresensiGuruController extends Controller
     {
         $tipe = $request->get('tipe', 'guru');
 
-        $bulan = $request->get('bulan', date('m'));
-
-        $tahun = $request->get('tahun', date('Y'));
+        $now = now()->setTimezone('Asia/Jakarta');
+        $bulan = $request->get('bulan', $now->month);
+        $tahun = $request->get('tahun', $now->year);
 
         // RIWAYAT GURU
         if ($tipe == 'guru') {
