@@ -610,3 +610,34 @@ Route::middleware(['auth', 'role:guru,guru_kelas,guru_pendamping'])->prefix('gur
         ->name('orangtua.rapor.show');
 
 });
+
+// TEMPORARY: Update Tabel Presensi Siswa
+Route::get('/update-presensi-table', function () {
+    require __DIR__.'/../update-presensi-table.php';
+});
+
+// TEMPORARY: Debug Presensi
+Route::get('/debug-presensi', function () {
+    echo "<h1>Debug Presensi</h1>";
+
+    // Cek kolom presensi_siswas:
+    $columns = Schema::getColumnListing('presensi_siswas');
+    echo "<h3>Kolom di tabel presensi_siswas:</h3><ul>";
+    foreach ($columns as $col) {
+        echo "<li>{$col}</li>";
+    }
+    echo "</ul>";
+
+    // Cek 10 data presensi terakhir:
+    $presensi = \App\Models\PresensiSiswa::latest()->take(10)->get();
+    echo "<h3>10 Data Presensi Terakhir:</h3>";
+    if ($presensi->isEmpty()) {
+        echo "<p>Belum ada data presensi.</p>";
+    } else {
+        echo "<table border='1' cellpadding='5'><tr><th>ID</th><th>Siswa</th><th>Tanggal</th><th>Semester</th><th>Tahun Ajaran</th></tr>";
+        foreach ($presensi as $p) {
+            echo "<tr><td>{$p->id}</td><td>".($p->siswa->nama_siswa ?? '?')."</td><td>{$p->tanggal}</td><td>{$p->semester}</td><td>{$p->tahun_ajaran}</td></tr>";
+        }
+        echo "</table>";
+    }
+});
