@@ -506,6 +506,11 @@ $(function () {
         input.prop('disabled', true);
         scanLine.hide();
 
+        // Pause scanner ketika memproses
+        if(html5QrCode && html5QrCode.pauseScan){
+            html5QrCode.pauseScan();
+        }
+
         let url = mode === 'guru'
             ? "{{ route('guru.presensi.scanGuru') }}"
             : "{{ route('guru.presensi.scanSiswa') }}";
@@ -538,6 +543,10 @@ $(function () {
                     processing = false;
                     scanLine.show();
                     focusInput();
+                    // Resume scanner setelah delay
+                    if(html5QrCode && html5QrCode.resumeScan){
+                        html5QrCode.resumeScan();
+                    }
                 }, 2000);
             },
             error: function(xhr){
@@ -550,6 +559,10 @@ $(function () {
                     processing = false;
                     scanLine.show();
                     focusInput();
+                    // Resume scanner setelah delay
+                    if(html5QrCode && html5QrCode.resumeScan){
+                        html5QrCode.resumeScan();
+                    }
                 }, 1000);
             }
         });
