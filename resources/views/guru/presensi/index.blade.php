@@ -402,8 +402,7 @@ $(function () {
     let mode = 'siswa';
     let processing = false;
     let html5QrCode = null;
-    let lastScannedBarcode = '';
-    let lastScannedTime = 0;
+    let scannerActive = true; // Flag untuk menandakan apakah scanner aktif
 
     // =========================
     // ELEMENT
@@ -449,7 +448,7 @@ $(function () {
     // =========================
     // RESULT SUCCESS
     // =========================
-    function showSuccess(data){
+    function showSuccess(data) {
         result.hide().html(`
             <div class="alert alert-success border-0 shadow-sm p-3 mb-0" style="border-radius: 15px;">
                 <div class="d-flex align-items-center">
@@ -475,7 +474,7 @@ $(function () {
     // =========================
     // RESULT ERROR
     // =========================
-    function showError(message){
+    function showError(message) {
         result.hide().html(`
             <div class="alert alert-danger border-0 shadow-sm p-3 mb-0" style="border-radius: 15px;">
                 <div class="d-flex align-items-center">
@@ -492,51 +491,20 @@ $(function () {
     }
 
     // =========================
-    // STOP SCANNER TEMPORARY
-    // =========================
-    function stopScannerTemporarily(duration){
-        if(html5QrCode && html5QrCode.pauseScan){
-            html5QrCode.pauseScan();
-        }
-        scanLine.hide();
-        
-        setTimeout(() => {
-            processing = false;
-            lastScannedBarcode = '';
-            if(html5QrCode && html5QrCode.resumeScan){
-                html5QrCode.resumeScan();
-            }
-            scanLine.show();
-            focusInput();
-        }, duration);
-    }
-
-    // =========================
     // PROCESS BARCODE
     // =========================
-    function processBarcode(barcode){
+    function processBarcode(barcode) {
         barcode = barcode.trim();
-        if(!barcode) return;
-        if(processing) return;
+        if (!barcode) return;
+        if (processing) return;
+        if (!scannerActive) return; // Cek apakah scanner aktif
         
-        // Cek apakah barcode sama dengan yang baru saja discan (hindari double scan cepat)
-        const now = Date.now();
-        if(barcode === lastScannedBarcode && (now - lastScannedTime) < 3000){
-            return;
-        }
-        
-        lastScannedBarcode = barcode;
-        lastScannedTime = now;
         processing = true;
+        scannerActive = false; // Nonaktifkan scanner
         
         loading.css('display', 'block');
         input.prop('disabled', true);
         input.val('');
-        
-        // Stop scanner dulu
-        if(html5QrCode && html5QrCode.pauseScan){
-            html5QrCode.pauseScan();
-        }
         scanLine.hide();
 
         let url = mode === 'guru'
@@ -550,32 +518,42 @@ $(function () {
                 _token: "{{ csrf_token() }}",
                 barcode: barcode
             },
-            success: function(res){
+            success: function(res) {
                 loading.hide();
                 input.prop('disabled', false);
                 
-                if(res.success){
+                if (res.success) {
                     showSuccess(res.data);
                     // Play sound if possible
                     try {
                         let audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
                         audio.play();
                     } catch(e) {}
-                    // Stop scanner 3 detik untuk success
-                    stopScannerTemporarily(3000);
                 } else {
                     showError(res.message);
-                    // Stop scanner 2 detik untuk error
-                    stopScannerTemporarily(2000);
                 }
+                
+                // Aktifkan scanner kembali setelah 3 detik
+                setTimeout(() => {
+                    processing = false;
+                    scannerActive = true;
+                    scanLine.show();
+                    focusInput();
+                }, 3000);
             },
-            error: function(xhr){
+            error: function(xhr) {
                 console.log(xhr.responseText);
                 loading.hide();
                 input.prop('disabled', false);
                 showError('Barcode gagal diproses. Periksa koneksi atau sistem.');
-                // Stop scanner 2 detik untuk error
-                stopScannerTemporarily(2000);
+                
+                // Aktifkan scanner kembali setelah 2 detik
+                setTimeout(() => {
+                    processing = false;
+                    scannerActive = true;
+                    scanLine.show();
+                    focusInput();
+                }, 2000);
             }
         });
     }
@@ -583,9 +561,9 @@ $(function () {
     // =========================
     // SUBMIT MANUAL
     // =========================
-    function submitBarcode(){
+    function submitBarcode() {
         let barcode = input.val().trim();
-        if(barcode === ''){
+        if (barcode === '') {
             input.addClass('is-invalid');
             setTimeout(() => input.removeClass('is-invalid'), 1000);
             return;
@@ -605,7 +583,7 @@ $(function () {
     // ENTER KEY
     // =========================
     input.keypress(function(e){
-        if(e.which === 13){
+        if(e.which === 13) {
             e.preventDefault();
             submitBarcode();
         }
@@ -614,8 +592,8 @@ $(function () {
     // =========================
     // CAMERA SCANNER
     // =========================
-    function startScanner(){
-        if(typeof Html5Qrcode === 'undefined'){
+    function startScanner() {
+        if (typeof Html5Qrcode === 'undefined') {
             $('#reader').html(`
                 <div class="alert alert-warning border-0 shadow-sm">
                     <i class="fas fa-exclamation-triangle mr-1"></i>
@@ -627,7 +605,7 @@ $(function () {
 
         Html5Qrcode.getCameras()
         .then(devices => {
-            if(devices.length > 0){
+            if (devices.length > 0) {
                 html5QrCode = new Html5Qrcode("reader");
                 
                 // Try to find back camera
@@ -642,12 +620,14 @@ $(function () {
                 html5QrCode.start(
                     cameraId,
                     {
-                        fps: 10, // Kurangi FPS agar tidak terlalu cepat
+                        fps: 5, // Kurangi FPS menjadi 5 agar lebih lambat
                         qrbox: { width: 250, height: 250 },
                         aspectRatio: 1.0
                     },
-                    function(decodedText){
-                        processBarcode(decodedText);
+                    function(decodedText) {
+                        if (scannerActive && !processing) { // Hanya proses jika scanner aktif dan tidak sedang memproses
+                            processBarcode(decodedText);
+                        }
                     }
                 ).then(() => {
                     scanLine.show();
