@@ -705,3 +705,12 @@ Route::get('/debug-presensi', function () {
         echo "</table>";
     }
 });
+
+// TEMPORARY: Test Scan Route
+Route::post('/test-scan', function (\Illuminate\Http\Request $request) {
+    return response()->json([
+        'success' => true,
+        'message' => 'Test route berfungsi!',
+        'data' => $request->all()
+    ]);
+});
