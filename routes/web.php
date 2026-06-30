@@ -714,3 +714,20 @@ Route::post('/test-scan', function (\Illuminate\Http\Request $request) {
         'data' => $request->all()
     ]);
 });
+
+// TEMPORARY: Hapus semua presensi hari ini
+Route::get('/clear-presensi-hari-ini', function () {
+    echo "<h1>Hapus Presensi Hari Ini</h1>";
+    
+    $today = \Illuminate\Support\Carbon::now()->toDateString();
+    
+    // Hapus presensi siswa hari ini
+    $countSiswa = \App\Models\PresensiSiswa::whereDate('tanggal', $today)->delete();
+    echo "<p>Menghapus {$countSiswa} data presensi siswa hari ini...</p>";
+    
+    // Hapus presensi guru hari ini
+    $countGuru = \App\Models\PresensiGuru::whereDate('tanggal', $today)->delete();
+    echo "<p>Menghapus {$countGuru} data presensi guru hari ini...</p>";
+    
+    echo "<hr><h2 style='color: green;'>SELESAI!</h2>";
+});
