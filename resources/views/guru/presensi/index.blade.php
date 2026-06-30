@@ -533,18 +533,24 @@ $(function () {
                 }
 
                 input.val('');
-                processing = false;
-                scanLine.show();
-                focusInput();
+                // Tambahkan delay 2 detik sebelum scan berikutnya
+                setTimeout(() => {
+                    processing = false;
+                    scanLine.show();
+                    focusInput();
+                }, 2000);
             },
             error: function(xhr){
                 console.log(xhr.responseText);
                 loading.hide();
                 input.prop('disabled', false);
                 showError('Barcode gagal diproses. Periksa koneksi atau sistem.');
-                processing = false;
-                scanLine.show();
-                focusInput();
+                // Tambahkan delay 1 detik sebelum scan berikutnya
+                setTimeout(() => {
+                    processing = false;
+                    scanLine.show();
+                    focusInput();
+                }, 1000);
             }
         });
     }
