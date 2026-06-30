@@ -638,6 +638,48 @@ Route::get('/update-presensi-table', function () {
     echo "<hr><h2>Selesai! Silakan coba fitur presensi kembali.</h2>";
 });
 
+// TEMPORARY: Add Columns Direct SQL
+Route::get('/add-columns-sql', function () {
+    echo "<h1>Tambah Kolom dengan SQL Langsung</h1>";
+    
+    try {
+        // Cek dan tambah kolom semester
+        $columns = \Illuminate\Support\Facades\DB::select("SHOW COLUMNS FROM presensi_siswas LIKE 'semester'");
+        if (empty($columns)) {
+            \Illuminate\Support\Facades\DB::statement("ALTER TABLE presensi_siswas ADD COLUMN semester VARCHAR(255) NULL AFTER status");
+            echo "<p style='color: green;'>✅ Kolom `semester` berhasil ditambahkan!</p>";
+        } else {
+            echo "<p style='color: blue;'>ℹ️ Kolom `semester` sudah ada!</p>";
+        }
+        
+        // Cek dan tambah kolom tahun_ajaran
+        $columns2 = \Illuminate\Support\Facades\DB::select("SHOW COLUMNS FROM presensi_siswas LIKE 'tahun_ajaran'");
+        if (empty($columns2)) {
+            \Illuminate\Support\Facades\DB::statement("ALTER TABLE presensi_siswas ADD COLUMN tahun_ajaran VARCHAR(255) NULL AFTER semester");
+            echo "<p style='color: green;'>✅ Kolom `tahun_ajaran` berhasil ditambahkan!</p>";
+        } else {
+            echo "<p style='color: blue;'>ℹ️ Kolom `tahun_ajaran` sudah ada!</p>";
+        }
+        
+        echo "<hr><h2>Selesai!</h2>";
+    } catch (\Exception $e) {
+        echo "<p style='color: red; font-weight: bold;'>Error: " . $e->getMessage() . "</p>";
+    }
+});
+
+// TEMPORARY: Run Migration
+Route::get('/run-migration', function () {
+    echo "<h1>Jalankan Migration</h1>";
+    
+    try {
+        Artisan::call('migrate');
+        echo "<p style='color: green; font-weight: bold;'>Migration berhasil dijalankan!</p>";
+        echo "<pre>" . Artisan::output() . "</pre>";
+    } catch (\Exception $e) {
+        echo "<p style='color: red; font-weight: bold;'>Error: " . $e->getMessage() . "</p>";
+    }
+});
+
 // TEMPORARY: Debug Presensi
 Route::get('/debug-presensi', function () {
     echo "<h1>Debug Presensi</h1>";
