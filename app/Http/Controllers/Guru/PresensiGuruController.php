@@ -20,10 +20,14 @@ class PresensiGuruController extends Controller
     {
         $today = now()->setTimezone('Asia/Jakarta')->toDateString();
 
+        // Dapatkan guru yang sedang login
+        $guru = Auth::user()->guru;
+        $guruId = $guru ? $guru->id : null;
+
         // Presensi guru login hari ini
-        $presensiGuruHariIni = PresensiGuru::where('guru_id', Auth::id())
+        $presensiGuruHariIni = $guruId ? PresensiGuru::where('guru_id', $guruId)
             ->whereDate('tanggal', $today)
-            ->first();
+            ->first() : null;
 
         // Total siswa hadir hari ini
         $presensiSiswaHariIni = PresensiSiswa::whereDate('tanggal', $today)
@@ -253,12 +257,15 @@ class PresensiGuruController extends Controller
 
         // RIWAYAT GURU
         if ($tipe == 'guru') {
+            // Dapatkan guru yang sedang login
+            $guru = Auth::user()->guru;
+            $guruId = $guru ? $guru->id : null;
 
-            $presensi = PresensiGuru::where('guru_id', Auth::id())
+            $presensi = $guruId ? PresensiGuru::where('guru_id', $guruId)
                 ->whereMonth('tanggal', $bulan)
                 ->whereYear('tanggal', $tahun)
                 ->orderBy('tanggal', 'desc')
-                ->get();
+                ->get() : collect();
 
         } else {
 
