@@ -402,7 +402,7 @@ $(function () {
     let mode = 'siswa';
     let processing = false;
     let html5QrCode = null;
-    let scannerActive = true; // Flag untuk menandakan apakah scanner aktif
+    let lastScanTime = 0; // Waktu scan terakhir
 
     // =========================
     // ELEMENT
@@ -497,10 +497,16 @@ $(function () {
         barcode = barcode.trim();
         if (!barcode) return;
         if (processing) return;
-        if (!scannerActive) return; // Cek apakah scanner aktif
+        
+        // Cek apakah scan terakhir kurang dari 5 detik yang lalu
+        const now = Date.now();
+        if (now - lastScanTime < 5000) {
+            console.log('Tunggu 5 detik sebelum scan lagi');
+            return;
+        }
         
         processing = true;
-        scannerActive = false; // Nonaktifkan scanner
+        lastScanTime = now; // Update waktu scan terakhir
         
         loading.css('display', 'block');
         input.prop('disabled', true);
@@ -533,13 +539,12 @@ $(function () {
                     showError(res.message);
                 }
                 
-                // Aktifkan scanner kembali setelah 3 detik
+                // Aktifkan kembali setelah 5 detik
                 setTimeout(() => {
                     processing = false;
-                    scannerActive = true;
                     scanLine.show();
                     focusInput();
-                }, 3000);
+                }, 5000);
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
@@ -547,13 +552,12 @@ $(function () {
                 input.prop('disabled', false);
                 showError('Barcode gagal diproses. Periksa koneksi atau sistem.');
                 
-                // Aktifkan scanner kembali setelah 2 detik
+                // Aktifkan kembali setelah 3 detik
                 setTimeout(() => {
                     processing = false;
-                    scannerActive = true;
                     scanLine.show();
                     focusInput();
-                }, 2000);
+                }, 3000);
             }
         });
     }
@@ -620,12 +624,12 @@ $(function () {
                 html5QrCode.start(
                     cameraId,
                     {
-                        fps: 5, // Kurangi FPS menjadi 5 agar lebih lambat
+                        fps: 2, // FPS sangat lambat, hanya 2x per detik
                         qrbox: { width: 250, height: 250 },
                         aspectRatio: 1.0
                     },
                     function(decodedText) {
-                        if (scannerActive && !processing) { // Hanya proses jika scanner aktif dan tidak sedang memproses
+                        if (!processing) { // Hanya proses jika tidak sedang memproses
                             processBarcode(decodedText);
                         }
                     }
